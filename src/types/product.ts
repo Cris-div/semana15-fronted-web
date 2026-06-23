@@ -3,8 +3,21 @@ export interface Product {
   nombre: string;
   precio: number;
   descripcion?: string;
+  categoryId?: number;
+  CategoryId?: number;
+  imageUrl?: string;
+  ImageUrl?: string;
+  category?: Category;
+  Category?: Category;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface Category {
+  id: number;
+  nombre?: string;
+  name?: string;
+  descripcion?: string;
 }
 
 export interface ApiResponse<T> {

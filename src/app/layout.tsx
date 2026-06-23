@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
   title: 'ProductStore',
@@ -17,9 +17,7 @@ export default function RootLayout({
     <html lang="es">
       <body className="min-h-screen flex flex-col bg-gray-100">
         <Navbar />
-        <main className="flex-1 bg-gray-100">
-          {children}
-        </main>
+        <main className="flex-1 bg-gray-100">{children}</main>
         <Footer />
       </body>
     </html>

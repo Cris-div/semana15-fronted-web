@@ -1,8 +1,13 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Product, ApiResponse } from '@/types/product';
+import { API_URL } from '@/lib/api';
+import { ApiResponse, Product } from '@/types/product';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+export const dynamic = 'force-dynamic';
+
+function getProductImage(product: Product) {
+  return product.imageUrl || product.ImageUrl;
+}
 
 async function getProduct(id: string): Promise<Product | null> {
   try {
@@ -15,7 +20,7 @@ async function getProduct(id: string): Promise<Product | null> {
     const data: ApiResponse<Product> = await res.json();
     return data.success ? data.data : null;
   } catch (error) {
-    console.error('Error fetching product:', error);
+    console.error(error);
     return null;
   }
 }
@@ -23,35 +28,41 @@ async function getProduct(id: string): Promise<Product | null> {
 export default async function ProductDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const product = await getProduct(params.id);
+  const { id } = await params;
+  const product = await getProduct(id);
 
   if (!product) {
     notFound();
   }
 
+  const image = getProductImage(product);
+
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <Link
-        href="/"
-        className="text-sm font-medium text-gray-600 hover:text-gray-900 mb-6 inline-flex items-center gap-2 transition-colors"
-      >
-        &larr; Volver a productos
+    <div className="max-w-7xl mx-auto px-4 py-12">
+      <Link href="/" className="text-gray-600 hover:text-black">
+        ← Volver a productos
       </Link>
 
-      <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          {product.nombre}
-        </h1>
-        <p className="text-3xl font-bold text-gray-900 mb-6">
-          $/ {product.precio}
+      <div className="bg-white border border-gray-200 rounded-lg p-8 mt-6">
+        <h1 className="text-3xl font-bold text-gray-900">{product.nombre}</h1>
+
+        <p className="text-3xl font-bold mt-4 text-gray-900">
+          S/ {product.precio}
         </p>
 
-        <div className="prose max-w-none text-gray-600">
-          <p className="whitespace-pre-line">
-            {product.descripcion || 'Sin descripción disponible.'}
-          </p>
+        {image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={image}
+            alt={product.nombre}
+            className="mt-6 rounded-lg max-h-96 w-full object-cover"
+          />
+        )}
+
+        <div className="mt-6 text-gray-600">
+          {product.descripcion || 'Sin descripción disponible.'}
         </div>
       </div>
     </div>

@@ -1,72 +1,49 @@
-'use client';
-
+import { cookies } from 'next/headers';
 import Link from 'next/link';
+import LogoutButton from '@/components/LogoutButton';
 
-export default function Navbar() {
-
-  const logout = () => {
-    localStorage.clear();
-
-    document.cookie =
-      'role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-
-    window.location.href = '/login';
-  };
+export default async function Navbar() {
+  const cookieStore = await cookies();
+  const role = cookieStore.get('role')?.value;
 
   return (
     <nav className="bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        <div className="flex justify-between h-16 items-center">
-
-          <Link
-            href="/"
-            className="text-2xl font-bold text-gray-900"
-          >
+        <div className="flex min-h-16 flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <Link href="/" className="text-2xl font-bold text-gray-900">
             ProductStore
           </Link>
 
-          <div className="flex items-center gap-6">
-
-            <Link
-              href="/"
-              className="text-gray-700 hover:text-black"
-            >
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <Link href="/" className="text-gray-700 hover:text-black">
               Productos
             </Link>
 
-            <Link
-              href="/login"
-              className="text-gray-700 hover:text-black"
-            >
-              Login
+            <Link href="/categories" className="text-gray-700 hover:text-black">
+              Categorías
             </Link>
 
-            <Link
-              href="/register"
-              className="text-gray-700 hover:text-black"
-            >
-              Registro
-            </Link>
+            {role === 'ADMIN' && (
+              <Link href="/admin" className="text-gray-700 hover:text-black">
+                Admin
+              </Link>
+            )}
 
-            <Link
-              href="/admin"
-              className="text-gray-700 hover:text-black"
-            >
-              Admin
-            </Link>
+            {!role ? (
+              <>
+                <Link href="/login" className="text-gray-700 hover:text-black">
+                  Login
+                </Link>
 
-            <button
-              onClick={logout}
-              className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-            >
-              Salir
-            </button>
-
+                <Link href="/register" className="text-gray-700 hover:text-black">
+                  Registro
+                </Link>
+              </>
+            ) : (
+              <LogoutButton />
+            )}
           </div>
-
         </div>
-
       </div>
     </nav>
   );
