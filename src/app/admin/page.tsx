@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Product, ApiResponse } from '@/types/product';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 export default function AdminPage() {
     const [products, setProducts] = useState<Product[]>([]);
